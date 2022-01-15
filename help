@@ -1,0 +1,419 @@
+    //While using power function ALWAYS use it like (ll)pow  ALWAYS
+    //To use binary operators like '&' etc ALWAYS USE BRACKETS i.e cout << (a&b);
+    //a+b = (a&b) + (a||b)
+    //a+b = (a | b) + 2*(a&b)
+    //use next_permutation in c++ stl to generate permutations
+    //for any range in an array [L,R] there are only O(log(R-L)) possible values of prefix & and prefix gcd
+    //For a key with multipke values use map<int,set<int>> always
+    //Sum of products of all possible subsets of an array = (1+a1)(1+a2)(1+a3)....(1+an)-1
+    //Parity of permutation does not change on 3 cycling\
+    //lower_bound in vectors returns the number of elements lesser than the number
+    //ALWAYS USE ( LL ) WHEN USING NORMAL INTEGERS (1,2,10 ETC) EVERYWHERE
+
+
+{                                           //GRID PROBLEMS
+
+    const int dx[4] = {1,0,-1,0}, dy[4] = {0,1,0,-1};
+    for(int i = 0; i < 4; i++){
+            newX = x + dx[i]; newY = y + dy[i];
+
+    }
+
+    bool ok(int x, int y) { return x >= 0 && y >= 0 && x < n && y < m; }
+
+}
+
+int pow(int a, int b) { //A:WAYS USE THIS INSTEAD OF POWER FUNCTION
+    if (b == 0)
+        return 1;
+    int res = pow(a, b / 2);
+    if (b % 2)
+        return res * res * a;
+    else
+        return res * res;
+}
+
+
+long long modFact(long long n, long long p)     //FACTORIAL OF A NUMBER USING MOD
+{
+    if(n >= p)
+        return 0;
+
+    long long result = 1;
+    for (long long i = 2; i <= n; i++)
+        result = (result * i) % p;
+
+    return result;
+}
+
+
+bool isPrime(ll n){             //CHECK IF A NUMBER IS PRIME
+    if (n <= 1)
+        return false;
+    if (n <= 3)
+        return true;
+    if (n % 2 == 0 || n % 3 == 0)
+        return false;
+    for (int i = 5; i * i <= n; i = i + 6)
+        if (n % i == 0 || n % (i + 2) == 0)
+            return false;
+    return true;
+}
+
+ll gcd(ll a, ll b)               //USE THIS FUNCTION IN PLACE OF __GCD
+{
+    if (!a)
+        return b;
+    return gcd(b % a, a);
+}
+
+map<int,int> pfac(int n){          //RETURNS A MAP OF PRIME FACTORISATION OF THE NUMBER
+    map<int,int> m;
+    if(n%2==0){
+        m.insert(pair<int,int>(2,1));
+        n/=2;
+    }
+    while (n % 2 == 0){
+        m.find(2)->second++;
+        n/=2;
+    }
+    for (int i = 3; i <= sqrt(n); i = i + 2){
+        while (n % i == 0){
+            if(m.count(i)>0){
+                m.find(i)->second++;
+                n/=i;
+            }
+            else{
+                m.insert(pair<int,int>(i,1));
+                n/=i;
+            }
+        }
+    }
+    if(n>2)
+        m.insert(pair<int,int>(n,1));
+    return m;
+}
+
+int sumOfDigit(int n, int b)        //RETURNS THE SUM OF DIGITS OF NUMBER n IN BASE b
+{
+    // Initialize sum with 0
+    int unitDigit, sum = 0;
+    while (n > 0) {
+
+        // Compute unit digit of the number
+        unitDigit = n % b;
+
+        // Add unit digit in sum
+        sum += unitDigit;
+
+        // Update value of Number
+        n = n / b;
+    }
+    return sum;
+}
+
+bool isPalindrome(string S)            //RETURNS TRUE IF STRING IS A PALINDROME
+{
+    // Stores the reverse of the
+    // string S
+    string P = S;
+
+    // Reverse the string P
+    reverse(P.begin(), P.end());
+
+    // If S is equal to P
+    if (S == P) {
+        // Return "Yes"
+        return true;
+    }
+    // Otherwise
+    else {
+        // return "No"
+        return false;
+    }
+}
+
+void SieveOfEratosthenes(int n)        //SIEVE RETURNS ALL PRIME NUMBERS LESS THAN N
+{
+    // Create a boolean array
+    // "prime[0..n]" and initialize
+    // all entries it as true.
+    // A value in prime[i] will
+    // finally be false if i is
+    // Not a prime, else true.
+    bool prime[n + 1];
+    memset(prime, true, sizeof(prime));
+
+    for (int p = 2; p * p <= n; p++)
+    {
+        // If prime[p] is not changed,
+        // then it is a prime
+        if (prime[p] == true)
+        {
+            // Update all multiples
+            // of p greater than or
+            // equal to the square of it
+            // numbers which are multiple
+            // of p and are less than p^2
+            // are already been marked.
+            for (int i = p * p; i <= n; i += p)
+                prime[i] = false;
+        }
+    }
+
+    // Print all prime numbers
+    for (int p = 2; p <= n; p++)
+        if (prime[p])
+            cout << p << " ";
+}
+
+
+{                                        //ORDERED SET
+    #include<ext/pb_ds/assoc_container.hpp>
+    #include<ext/pb_ds/tree_policy.hpp>
+
+    using namespace __gnu_pbds;
+    typedef tree<int, null_type, less_equal<int>, rb_tree_tag, tree_order_statistics_node_update> pbds; // find_by_order, order_of_key
+
+    pbds s; //[DECLERATION]
+
+    //ORDERED SET
+    //REPLACE LESS BY LESS_EQUAL FOR MULTISET
+    //s.find_by_order(x) [GIVES INDEX OF AN ELEMENT OF A SET]
+    //S.order_of_key(x) [GIVES NUMBER OF ELEMENTS LESS THAN x IN THE SET]
+}
+
+string decimalToBinary(int n)           //DECIMAIL TO BINARY
+{
+    //finding the binary form of the number and
+    //converting it to string.
+    string s = bitset<64> (n).to_string();
+
+    //Finding the first occurrence of "1"
+    //to strip off the leading zeroes.
+    const auto loc1 = s.find('1');
+
+    if(loc1 != string::npos)
+        return s.substr(loc1);
+
+    return "0";
+}
+
+ll power(long long x, ll y, ll p)      //COMPUTES (x^y)%p
+{
+    ll res = 1;     // Initialize result
+
+    x = x % p; // Update x if it is more than or
+                // equal to p
+
+    if (x == 0) return 0; // In case x is divisible by p;
+
+    while (y > 0)
+    {
+        // If y is odd, multiply x with result
+        if (y & 1)
+            res = (res*x) % p;
+
+        // y must be even now
+        y = y>>1; // y = y/2
+        x = (x*x) % p;
+    }
+    return res;
+}
+
+ll printNcR(int n, int r)           //COMPUTES NCR EVEN FOR LARGE NUMBERS WITHOUT MOD
+{
+
+    // p holds the value of n*(n-1)*(n-2)...,
+    // k holds the value of r*(r-1)...
+    long long p = 1, k = 1;
+
+    // C(n, r) == C(n, n-r),
+    // choosing the smaller value
+    if (n - r < r)
+        r = n - r;
+
+    if (r != 0) {
+        while (r) {
+            p *= n;
+            k *= r;
+
+            // gcd of p, k
+            long long m = __gcd(p, k);
+
+            // dividing by gcd, to simplify
+            // product division by their gcd
+            // saves from the overflow
+            p /= m;
+            k /= m;
+
+            n--;
+            r--;
+        }
+
+        // k should be simplified to 1
+        // as C(n, r) is a natural number
+        // (denominator should be 1 ) .
+    }
+
+    else
+        p = 1;
+
+    // if our approach is correct p = ans and k =1
+    //cout << p << endl;
+    return p;
+}
+
+ll nCrModp(int n, int r, ll p)          //COMPUTES NCR MOD SOME NUMBER
+{
+    // Optimization for the cases when r is large
+    if (r > n - r)
+        r = n - r;
+
+    // The array C is going to store last row of
+    // pascal triangle at the end. And last entry
+    // of last row is nCr
+    ll C[r + 1];
+    memset(C, 0, sizeof(C));
+
+    C[0] = 1; // Top row of Pascal Triangle
+
+    // One by constructs remaining rows of Pascal
+    // Triangle from top to bottom
+    for (int i = 1; i <= n; i++) {
+
+        // Fill entries of current row using previous
+        // row values
+        for (ll j = min(i, r); j > 0; j--)
+
+            // nCj = (n-1)Cj + (n-1)C(j-1);
+            C[j] = (C[j] + C[j - 1]) % p;
+    }
+    return C[r];
+}
+
+{                                   //STRING TO INTEGER
+    stringstream temp(s);
+    int x=0;
+    temp>>x;
+}
+
+
+
+{
+                                    //For n<=1e6 always use this for ncr and fctorial
+                                    //precomputes factorial and inverses to all numbers and answers queries for factorial and nCr in O(1).
+    const int N = 1000001;
+
+    // array to store inverse of 1 to N
+    ll factorialNumInverse[N + 1];
+
+    // array to precompute inverse of 1! to N!
+    ll naturalNumInverse[N + 1];
+
+    // array to store factorial of first N numbers
+    ll fact[N + 1];
+
+    // Function to precompute inverse of numbers
+    void InverseofNumber(ll p)
+    {
+        naturalNumInverse[0] = naturalNumInverse[1] = 1;
+        for (int i = 2; i <= N; i++)
+            naturalNumInverse[i] = naturalNumInverse[p % i] * (p - p / i) % p;
+    }
+    // Function to precompute inverse of factorials
+    void InverseofFactorial(ll p)
+    {
+        factorialNumInverse[0] = factorialNumInverse[1] = 1;
+
+        // precompute inverse of natural numbers
+        for (int i = 2; i <= N; i++)
+            factorialNumInverse[i] = (naturalNumInverse[i] * factorialNumInverse[i - 1]) % p;
+    }
+
+    // Function to calculate factorial of 1 to N
+    void factorial(ll p)
+    {
+        fact[0] = 1;
+
+        // precompute factorials
+        for (int i = 1; i <= N; i++) {
+            fact[i] = (fact[i - 1] * i) % p;
+        }
+    }
+
+    // Function to return nCr % p in O(1) time
+    ll Binomial(ll N, ll R, ll p)
+    {
+        // n C r = n!*inverse(r!)*inverse((n-r)!)
+        ll ans = ((fact[N] * factorialNumInverse[R])
+                  % p * factorialNumInverse[N - R])
+                 % p;
+        return ans;
+    }
+
+    /*
+    in int main() write this-
+    ll p = 1000000007;
+    InverseofNumber(p);
+    InverseofFactorial(p);
+    factorial(p);
+    */
+
+}
+
+{                                                                       //SEGMENT TREE TEMPLATE
+
+    vector<ll> buildsegtree(vector<int> v,int n){ //BUILDING A SEGMENT TREE
+
+        while(__builtin_popcount(n)!=1){
+            v.push_back(0);
+            n++;
+        }
+
+        segtree.resize(2*n);
+        for(int i=0;i<n;i++)
+            segtree[n+i]=v[i];
+
+        for(int i=n-1;i>0;i--)
+            segtree[i]=segtree[2*i]+segtree[2*i+(1)];
+
+        return segtree;
+    }
+
+    ll sum(int i,int l,int r,int xl,int xr){  //RANGE SUM QUERIES
+        int mid=(l+r)/2;
+        if(xl<=l&&xr>=r)
+            return segtree[i];
+
+        else if(xr<l||xl>r)
+            return 0;
+
+        else
+            return sum(2*i,l,mid,xl,xr)+sum(2*i+(1),mid+1,r,xl,xr);
+
+    }
+
+    void changenum(int i,int l,int r,int index,int change){  //UPDATE ELEMENTS
+        int mid=(l+r)/2;
+        if((index==l)&&(index==r)){
+            segtree[i]+=change;
+            return;
+        }
+        else if((index>l-1)&&(index<r+1)){
+            segtree[i]+=change;
+            changenum(2*i,l,mid,index,change);
+            changenum(2*i+(1),mid+1,r,index,change);
+        }
+        else
+            return;
+
+    }
+
+
+
+}
+
+
+
+
