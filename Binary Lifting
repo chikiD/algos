@@ -1,0 +1,39 @@
+int up[1000005][23];
+
+string decimalToBinary(int n)           //DECIMAIL TO BINARY
+{
+    string s = bitset<64> (n).to_string();
+
+    const auto loc1 = s.find('1');
+
+    if(loc1 != string::npos)
+        return s.substr(loc1);
+
+    return "0";
+}
+
+int getKthAncestor(int node, int k) {
+    string s=decimalToBinary(k-1);
+    int l=s.size();
+    repp(l){
+        if(s[i]=='1'){
+            node=up[node][l-i-1];
+        }
+        if(node==-1)
+            return node;
+    }
+    return node;
+}
+
+// In Main
+
+    repp(n)up[i+1][0]=next[i+1];
+
+    for(int j = 1; j < 23; j++) {
+        for(int v = 1; v < n+1; v++) {
+            if(up[v][j-1]==-1)
+                up[v][j]=-1;
+            else
+                up[v][j] = up[ up[v][j-1] ][j-1];
+        }
+    }
