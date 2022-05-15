@@ -59,3 +59,9 @@ void solve()
     sum(1,1,n,a,b)
     
 }
+
+PLEASE SEE :
+int n and vector<int> v are changed here which is why passed by reference
+
+
+
