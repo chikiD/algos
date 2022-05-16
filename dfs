@@ -6,9 +6,6 @@ void dfs1(int curr){
         if(!visited[itr])
             dfs1(itr);
     }
- 
-    fans.push(curr);
- 
 }
  
 void dfs(int n){
