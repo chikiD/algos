@@ -31,6 +31,15 @@ int sum(int i,int l,int r,int xl,int xr){
 
 }
 
+void changenum(int a,int b,int n){                              // DYNAMIC RANGE MINIMUM THROUGH THIS BECAUSE YOU HAVE TO GO BOTTOM UP REMEMBER
+    segtree[n+a-1]=b;                                           // REFER CSES IF IN DOUBT
+    int curr=(n+a-1);
+    while(curr>=1){
+        curr/=2;
+        segtree[curr]=min(segtree[2*curr],segtree[2*curr+(1)]);
+    }
+}
+
 void changenum(int i,int l,int r,int index,int change){
 
     int mid=(l+r)/2;
