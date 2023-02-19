@@ -1,14 +1,16 @@
-    //While using power function ALWAYS use it like (ll)pow  ALWAYS
-    //To use binary operators like '&' etc ALWAYS USE BRACKETS i.e cout << (a&b);
-    //a+b = (a&b) + (a||b)
-    //a+b = (a | b) + 2*(a&b)
-    //use next_permutation in c++ stl to generate permutations
-    //for any range in an array [L,R] there are only O(log(R-L)) possible values of prefix & and prefix gcd
-    //For a key with multipke values use map<int,set<int>> always
-    //Sum of products of all possible subsets of an array = (1+a1)(1+a2)(1+a3)....(1+an)-1
-    //Parity of permutation does not change on 3 cycling\
-    //lower_bound in vectors returns the number of elements lesser than the number
-    //ALWAYS USE ( LL ) WHEN USING NORMAL INTEGERS (1,2,10 ETC) EVERYWHERE
+    ///While using power function ALWAYS use it like (ll)pow  ALWAYS
+    ///To use binary operators like '&' etc ALWAYS USE BRACKETS i.e cout << (a&b);
+    ///a+b = (a ^ b) + 2*(a&b)
+    ///use next_permutation in c++ stl to generate permutations
+    ///for any range in an array [L,R] there are only O(log(R-L)) possible values of prefix & and prefix gcd
+    ///For a key with multiple values use map<int,set<int>> always
+    ///Sum of products of all possible subsets of an array = (1+a1)(1+a2)(1+a3)....(1+an)-1
+    ///Parity of permutation does not change on 3 cycling\
+    ///lower_bound in vectors returns the number of elements lesser than the number
+    ///ALWAYS USE ( LL ) WHEN USING NORMAL INTEGERS (1,2,10 ETC) EVERYWHERE
+    ///ALWAYS CLEAR 2D VECTORS ITERATING THROUGH ITS LENGHT AND CLEARING ONE BY ONE
+    ///ALWAYS CLEAR VISITED ARRAYS ETC MANUALLY IN GRAPHS
+
 
 
 {                                           //GRID PROBLEMS
@@ -23,7 +25,43 @@
 
 }
 
-int pow(int a, int b) { //A:WAYS USE THIS INSTEAD OF POWER FUNCTION
+int ceil2(int a, int b) {
+    return (a + b - 1) / b;
+}
+
+void dfs1(int curr){
+
+    visited[curr]=true;
+
+    for(auto &itr:adj[curr]){
+        if(!visited[itr]){
+            dfs1(itr);
+        }
+    }
+}
+
+void bfs(){
+
+    queue<int> q;
+    q.push(1);
+
+    while(!q.empty()){
+
+        int curr=q.front();
+        q.pop();
+        visited[curr]=true;
+
+        for(auto &itr:adj[curr]){
+            if(!visited[itr]){
+                q.push(itr);
+            }
+        }
+
+    }
+
+}
+
+int powi(int a, int b) { //A:WAYS USE THIS INSTEAD OF POWER FUNCTION
     if (b == 0)
         return 1;
     int res = pow(a, b / 2);
@@ -32,20 +70,6 @@ int pow(int a, int b) { //A:WAYS USE THIS INSTEAD OF POWER FUNCTION
     else
         return res * res;
 }
-
-
-long long modFact(long long n, long long p)     //FACTORIAL OF A NUMBER USING MOD
-{
-    if(n >= p)
-        return 0;
-
-    long long result = 1;
-    for (long long i = 2; i <= n; i++)
-        result = (result * i) % p;
-
-    return result;
-}
-
 
 bool isPrime(ll n){             //CHECK IF A NUMBER IS PRIME
     if (n <= 1)
@@ -60,7 +84,7 @@ bool isPrime(ll n){             //CHECK IF A NUMBER IS PRIME
     return true;
 }
 
-ll gcd(ll a, ll b)               //USE THIS FUNCTION IN PLACE OF __GCD
+int gcd(int a, int b)               //USE THIS FUNCTION IN PLACE OF __GCD
 {
     if (!a)
         return b;
@@ -133,38 +157,99 @@ bool isPalindrome(string S)            //RETURNS TRUE IF STRING IS A PALINDROME
     }
 }
 
-void SieveOfEratosthenes(int n)        //SIEVE RETURNS ALL PRIME NUMBERS LESS THAN N
+long long modFact(long long n, long long p)     //FACTORIAL OF A NUMBER USING MOD
 {
-    // Create a boolean array
-    // "prime[0..n]" and initialize
-    // all entries it as true.
-    // A value in prime[i] will
-    // finally be false if i is
-    // Not a prime, else true.
-    bool prime[n + 1];
-    memset(prime, true, sizeof(prime));
+    if(n >= p)
+        return 0;
 
-    for (int p = 2; p * p <= n; p++)
+    long long result = 1;
+    for (long long i = 2; i <= n; i++)
+        result = (result * i) % p;
+
+    return result;
+}
+
+int MAX_SIZE = 40000;
+
+// isPrime[] : isPrime[i] is true if number is prime
+// prime[] : stores all prime number less than N
+// SPF[] that store smallest prime factor of number
+// [for Exp : smallest prime factor of '8' and '16'
+// is '2' so we put SPF[8] = 2 , SPF[16] = 2 ]
+vector<int>isprime(MAX_SIZE , true);
+vector<int>pp;
+vector<int>SPF(MAX_SIZE);
+
+// function generate all prime number less than N in O(n)
+void manipulated_seive(int N)
+{
+    // 0 and 1 are not prime
+    isprime[0] = isprime[1] = false ;
+
+    // Fill rest of the entries
+    for (int i=2; i<N ; i++)
     {
-        // If prime[p] is not changed,
-        // then it is a prime
-        if (prime[p] == true)
+        // If isPrime[i] == True then i is
+        // prime number
+        if (isprime[i])
         {
-            // Update all multiples
-            // of p greater than or
-            // equal to the square of it
-            // numbers which are multiple
-            // of p and are less than p^2
-            // are already been marked.
-            for (int i = p * p; i <= n; i += p)
-                prime[i] = false;
+            // put i into prime[] vector
+            pp.push_back(i);
+
+            // A prime number is its own smallest
+            // prime factor
+            SPF[i] = i;
+        }
+
+        // Remove all multiples of  i*prime[j] which are
+        // not prime by making isPrime[i*prime[j]] = false
+        // and put smallest prime factor of i*Prime[j] as prime[j]
+        // [ for exp :let  i = 5 , j = 0 , prime[j] = 2 [ i*prime[j] = 10 ]
+        // so smallest prime factor of '10' is '2' that is prime[j] ]
+        // this loop run only one time for number which are not prime
+        for (int j=0;
+             j < (int)pp.size() &&
+             i*pp[j] < N && pp[j] <= SPF[i];
+             j++)
+        {
+            isprime[i*pp[j]]=false;
+
+            // put smallest prime factor of i*prime[j]
+            SPF[i*pp[j]] = pp[j] ;
         }
     }
+}
 
-    // Print all prime numbers
-    for (int p = 2; p <= n; p++)
-        if (prime[p])
-            cout << p << " ";
+int N = 10000005;                        //SIEVE FOR FACTORIZING MANY NUMBERS
+int spf(N + 1, 1);
+void sieve()
+{
+    int i, j;
+    for(int i=2;i<=N;i++)
+    {
+        if (spf[i] == 1)
+        {
+            spf[i] = i;
+            for (j = i * i; j <= N; j += i)
+            {
+                if (spf[j] == 1)spf[j] = i;
+            }
+        }
+    }
+}
+vector<int> factorize(int n)
+{
+    vector<int> ans;
+    while (n > 1)
+    {
+        ll fact = spf[n];
+        while (n % fact == 0)
+        {
+            n /= fact;
+        }
+        ans.push_back(fact);
+    }
+    return ans;
 }
 
 
@@ -180,7 +265,7 @@ void SieveOfEratosthenes(int n)        //SIEVE RETURNS ALL PRIME NUMBERS LESS TH
     //ORDERED SET
     //REPLACE LESS BY LESS_EQUAL FOR MULTISET
     //s.find_by_order(x) [GIVES INDEX OF AN ELEMENT OF A SET]
-    //S.order_of_key(x) [GIVES NUMBER OF ELEMENTS LESS THAN x IN THE SET]
+    //S.order_of_key(x) [GIVES NUMBER OF ELEMENTS STRICTLY LESS THAN x IN THE SET]
 }
 
 string decimalToBinary(int n)           //DECIMAIL TO BINARY
@@ -199,9 +284,9 @@ string decimalToBinary(int n)           //DECIMAIL TO BINARY
     return "0";
 }
 
-ll power(long long x, ll y, ll p)      //COMPUTES (x^y)%p
+int power(int x, int y, int p)      //COMPUTES (x^y)%p
 {
-    ll res = 1;     // Initialize result
+    int res = 1;     // Initialize result
 
     x = x % p; // Update x if it is more than or
                 // equal to p
@@ -264,7 +349,7 @@ ll printNcR(int n, int r)           //COMPUTES NCR EVEN FOR LARGE NUMBERS WITHOU
     return p;
 }
 
-ll nCrModp(int n, int r, ll p)          //COMPUTES NCR MOD SOME NUMBER
+int nCrModp(int n, int r, int p)          //COMPUTES NCR MOD SOME NUMBER
 {
     // Optimization for the cases when r is large
     if (r > n - r)
@@ -273,7 +358,7 @@ ll nCrModp(int n, int r, ll p)          //COMPUTES NCR MOD SOME NUMBER
     // The array C is going to store last row of
     // pascal triangle at the end. And last entry
     // of last row is nCr
-    ll C[r + 1];
+    int C[r + 1];
     memset(C, 0, sizeof(C));
 
     C[0] = 1; // Top row of Pascal Triangle
@@ -284,7 +369,7 @@ ll nCrModp(int n, int r, ll p)          //COMPUTES NCR MOD SOME NUMBER
 
         // Fill entries of current row using previous
         // row values
-        for (ll j = min(i, r); j > 0; j--)
+        for (int j = min(i, r); j > 0; j--)
 
             // nCj = (n-1)Cj + (n-1)C(j-1);
             C[j] = (C[j] + C[j - 1]) % p;
@@ -410,9 +495,74 @@ ll nCrModp(int n, int r, ll p)          //COMPUTES NCR MOD SOME NUMBER
 
     }
 
-
-
 }
+
+
+struct LCA {                                           // LOWEST COMMON ANCESTOR
+    vector<int> height, euler, first, segtree;
+    vector<bool> visited;
+    int n;
+
+    LCA(vector<vector<int>> &adj, int root = 0) {
+        n = adj.size();
+        height.resize(n);
+        first.resize(n);
+        euler.reserve(n * 2);
+        visited.assign(n, false);
+        dfs(adj, root);
+        int m = euler.size();
+        segtree.resize(m * 4);
+        build(1, 0, m - 1);
+    }
+
+    void dfs(vector<vector<int>> &adj, int node, int h = 0) {
+        visited[node] = true;
+        height[node] = h;
+        first[node] = euler.size();
+        euler.push_back(node);
+        for (auto to : adj[node]) {
+            if (!visited[to]) {
+                dfs(adj, to, h + 1);
+                euler.push_back(node);
+            }
+        }
+    }
+
+    void build(int node, int b, int e) {
+        if (b == e) {
+            segtree[node] = euler[b];
+        } else {
+            int mid = (b + e) / 2;
+            build(node << 1, b, mid);
+            build(node << 1 | 1, mid + 1, e);
+            int l = segtree[node << 1], r = segtree[node << 1 | 1];
+            segtree[node] = (height[l] < height[r]) ? l : r;
+        }
+    }
+
+    int query(int node, int b, int e, int L, int R) {
+        if (b > R || e < L)
+            return -1;
+        if (b >= L && e <= R)
+            return segtree[node];
+        int mid = (b + e) >> 1;
+
+        int left = query(node << 1, b, mid, L, R);
+        int right = query(node << 1 | 1, mid + 1, e, L, R);
+        if (left == -1) return right;
+        if (right == -1) return left;
+        return height[left] < height[right] ? left : right;
+    }
+
+    int lca(int u, int v) {
+        int left = first[u], right = first[v];
+        if (left > right)
+            swap(left, right);
+        return query(1, 0, euler.size() - 1, left, right);
+    }
+};
+//declare object like this
+struct LCA idk={adj,1};
 
 
 
